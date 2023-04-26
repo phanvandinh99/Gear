@@ -1,0 +1,110 @@
+﻿@model Web_Hutech_Gear.Models.UpDate
+@using Microsoft.AspNet.Identity
+@using Microsoft.AspNet.Identity.EntityFramework;
+@using Web_Hutech_Gear.Models
+@{
+    ViewBag.Title = "Updata";
+}
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Information</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fyqhj4Ik/yJ0H45pICTxAPDH3eY6zQDkhp/n49" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-TI0DjOoZPqvW8UEv6+VKj9YIc6l+OgQ2RCvLtbF6DUZc0wDPdR8sJP6ee/+ac6UyT6T1L0U8wb6qfpJngMnZng==" crossorigin="anonymous" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/profile/userProfile.css" />
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+</head>
+<body>
+
+    <form action="/Account/Update" method="post" role="form" class="signup-form" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <div class="avatar-container">
+            <div class="avatar-preview">
+                @{
+                    IdentityDbContext<ApplicationUser> context = new IdentityDbContext<ApplicationUser>();
+                    var ID = User.Identity.GetUserId();
+                    var find = context.Users.FirstOrDefault(p => p.Id == ID);
+                    if (!string.IsNullOrEmpty(find.Avatar))
+                    {
+                        <img alt="User Image" src="~/Content/Images/@find.Avatar" id="preview-image" />
+                    }
+                    else
+                    {
+                        <img alt="User Image" src="~/Content/Images/avt.jpg" id="preview-image" />
+                    }
+                }
+            </div>
+            <div class="avatar-upload">
+                <input type="file" name="ImageFile" id="ImageFile" value="@find.Avatar" accept=".png, .jpg, .jpeg" />
+            </div>
+        </div>
+        <div class="form-fields">
+            <div class="form-field">
+                <label for="fullname">Họ và tên:</label>
+                <i class='fas fa-pencil-alt' style='font-size:24px'></i>
+                <input type="text" id="FullName" name="FullName" value="@find.FullName">
+                @Html.ValidationMessageFor(row => row.FullName)
+            </div>
+            <div class="form-field">
+                <label for="username">Tên tài khoản:</label>
+                <i class='fas fa-user-circle' style='font-size:24px'></i>
+                <input type="text" id="UserName" name="UserName" value="@find.UserName" readonly>
+            </div>
+            <div class="form-field">
+                <label for="email">Email:</label>
+                <i class="material-icons" style="font-size:24px">email</i>
+                <input type="email" id="Email" name="Email" value="@find.Email" readonly>
+            </div>
+            <div class="form-field">
+                <label for="phone">Số điện thoại:</label>
+                <i class='fas fa-phone-square-alt' style='font-size:24px'></i>
+                <input type="tel" id="Phone" name="Phone" value="@find.PhoneNumber">
+                @Html.ValidationMessageFor(row => row.Phone)
+            </div>
+            <div class="form-field">
+                <label for="address">Địa chỉ:</label>
+                <i class="fa fa-home" style="font-size:24px"></i>
+                <input type="text" id="Address" name="Address" value="@find.Address">
+                @Html.ValidationMessageFor(row => row.Address)
+            </div>
+            <div class="submit-button">
+                <input type="submit" value="Lưu Thay Đổi" class="custom-submit">
+            </div>
+        </div>
+    </form>
+    <hr />
+    <div class="other-features">
+        <div class="manage-link">
+            @Html.ActionLink("Tính năng khác!", "Index", "Manage", new { area = "" }, htmlAttributes: new { title = "Manage" })
+        </div>
+    </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+</body>
+</html>
+<script>
+    // Lấy phần tử đầu vào hình ảnh và phần tử hình ảnh xem trước
+    const input = document.getElementById("ImageFile");
+    const preview = document.getElementById("preview-image");
+    // Đăng ký một sự kiện để lắng nghe khi người dùng chọn tệp hình ảnh mới
+    input.addEventListener("change", () => {
+        // Nếu không có tệp được chọn, hãy giữ hình ảnh hiện có
+        if (!input.files || !input.files[0]) {
+            return;
+        }
+        // Tạo một đối tượng FileReader để đọc nội dung của tệp hình ảnh
+        const reader = new FileReader();
+        // Đăng ký một sự kiện để lắng nghe khi FileReader đã hoàn thành việc đọc tệp
+        reader.addEventListener("load", () => {
+            // Cập nhật hình ảnh xem trước với nội dung của tệp hình ảnh mới
+            preview.src = reader.result;
+        });
+        // Đọc tệp hình ảnh
+        reader.readAsDataURL(input.files[0]);
+    });
+</script>
