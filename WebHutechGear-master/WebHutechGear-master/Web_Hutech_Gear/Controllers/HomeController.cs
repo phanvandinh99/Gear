@@ -45,8 +45,8 @@ namespace Web_Hutech_Gear.Controllers
 
         public ActionResult Comment(int productId, FormCollection f, string strURL)
         {
-            int rating = int.Parse(f["rate"].ToString()); ;
-            string content = f["content"].ToString();
+            int rating = Convert.ToInt32(Convert.ToString(f["rate"]) == null ? "5" : Convert.ToString(f["rate"]));
+            string content = Convert.ToString(f["content"]);
 
             var ID = User.Identity.GetUserId();
             var find = db.Users.FirstOrDefault(p => p.Id == ID);
